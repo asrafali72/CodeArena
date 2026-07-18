@@ -175,11 +175,22 @@ npm run dev
 
 Create a `screenshots` folder and add images such as:
 
-* Home page 
-* Problem page: ![Home Page](https://github.com/asrafali72/CodeArena/blob/main/Screenshorts/Homepage.png)
-* Code editor
-* AI assistant
-* Dashboard
+* Sign-Up page:
+  
+  ![Sign-up](https://github.com/asrafali72/CodeArena/blob/main/Screenshorts/sign-up.png) 
+* Problem page:
+  
+  ![Problem page](https://github.com/asrafali72/CodeArena/blob/main/Screenshorts/problem.png)
+* Admin pannel
+  
+   ![Admin Pannel](https://github.com/asrafali72/CodeArena/blob/main/Screenshorts/adminpanel.png) 
+* Add Problem
+  
+   ![Addproblem](https://github.com/asrafali72/CodeArena/blob/main/Screenshorts/insertproblem.png) 
+* Delete & Update
+  
+   ![Sign-up](https://github.com/asrafali72/CodeArena/blob/main/Screenshorts/delete%26upload.png) 
+
 
 Example:
 
