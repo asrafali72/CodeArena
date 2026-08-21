@@ -10,7 +10,7 @@ const register = async (req,res)=>{
     
     try{
         // validate the data;
-        //console.log("Incoming registration body:", req.body);
+        console.log("Incoming registration body:", req.body);
 
 
       validate(req.body); 
@@ -35,9 +35,10 @@ const register = async (req,res)=>{
         message:"Loggin Successfully"
     })
     }
-    catch(err){
-        res.status(400).send("Error: "+err);
-    }
+   catch(err){
+    console.error("Registration Error:", err);
+    res.status(400).send("Error: " + err.message);
+}
 }
 
 

@@ -200,8 +200,11 @@ const getProblemById = async(req,res)=>{
 const getAllProblem = async(req,res)=>{
 
   try{
+
+    console.log(req.body);
      
     const getProblem = await Problem.find({}).select('_id title difficulty tags');
+    console.log(getProblem.length);
 
    if(getProblem.length==0)
     return res.status(404).send("Problem is Missing");

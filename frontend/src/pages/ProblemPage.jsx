@@ -36,14 +36,18 @@ const ProblemPage = () => {
       try {
         
         const response = await axiosClient.get(`/problem/problemById/${problemId}`);
-       
+        console.log("Problem fetched successfully:", response.data);
         
-        const initialCode = response.data.startCode.find(sc => sc.language === langMap[selectedLanguage]).initialCode;
+        const selectedStartCode = response.data.startCode?.find(
+  (sc) => sc.language === langMap[selectedLanguage]
+);
 
+const initialCode = selectedStartCode?.initialCode || "";
         setProblem(response.data);
         
         setCode(initialCode);
         setLoading(false);
+       
         
       } catch (error) {
         console.error('Error fetching problem:', error);
@@ -55,12 +59,25 @@ const ProblemPage = () => {
   }, [problemId]);
 
   // Update code when language changes
-  useEffect(() => {
-    if (problem) {
-      const initialCode = problem.startCode.find(sc => sc.language === langMap[selectedLanguage]).initialCode;
-      setCode(initialCode);
+ useEffect(() => {
+  if (problem) {
+    const selectedStartCode = problem.startCode?.find(
+      (sc) => sc.language === langMap[selectedLanguage]
+    );
+
+    if (!selectedStartCode) {
+      console.error(
+        `Starter code not found for language: ${langMap[selectedLanguage]}`,
+        problem.startCode
+      );
+
+      setCode("");
+      return;
     }
-  }, [selectedLanguage, problem]);
+
+    setCode(selectedStartCode.initialCode);
+  }
+}, [selectedLanguage, problem]);
 
   const handleEditorChange = (value) => {
     setCode(value || '');

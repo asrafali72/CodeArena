@@ -10,10 +10,15 @@ const problemSchema = new Schema({
         type:String,
         required:true
     },
-    difficulty:{
-        type:String,
-        enum:['easy','medium','hard'],
-        required:true,
+    // difficulty:{
+    //     type:String,
+    //     enum:['easy','medium','hard'],
+    //     required:true,
+    // },
+    difficulty: {
+    type: String,
+    enum: ['basic', 'easy', 'medium', 'hard', 'advanced'],
+    required: true,
     },
     tags:{
         type:String,
