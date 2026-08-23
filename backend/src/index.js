@@ -1,6 +1,10 @@
 const express = require('express')
 const app = express();
 require('dotenv').config();
+
+// console.log("Mongo URI exists:", !!process.env.DB_CONNECT_STRING);
+// console.log("Redis password exists:", !!process.env.REDIS_PASS);
+
 const main =  require('./config/db')
 const cookieParser =  require('cookie-parser');
 const authRouter = require("./routes/userAuth");
