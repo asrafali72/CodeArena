@@ -65,8 +65,8 @@ import Homepage from "./pages/Homepage";
 import ProblemPage from "./pages/ProblemPage";
 import Admin from "./pages/Admin";
 import ContactUs from "./pages/ContactUs";
-
 // Components
+import BattleRoom from './components/BattleRoom';
 import Navbar from "./components/common/Navbar";
 import AdminPanel from "./components/AdminPanel";
 import AdminVideo from "./components/AdminVideo";
@@ -230,6 +230,8 @@ function App() {
           path="*"
           element={<Navigate to="/" replace />}
         />
+
+        <Route path="/battle/:roomId/:problemId" element={<BattleRoom />} />
 
       </Routes>
 

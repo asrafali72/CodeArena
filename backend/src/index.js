@@ -1,55 +1,82 @@
-const express = require('express')
+const express = require('express');
+const http = require('http'); 
+const { Server } = require('socket.io'); 
 const app = express();
+
+const server = http.createServer(app); 
+
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        credentials: true
+    }
+});
+
 require('dotenv').config();
 
-// console.log("Mongo URI exists:", !!process.env.DB_CONNECT_STRING);
-// console.log("Redis password exists:", !!process.env.REDIS_PASS);
-
-const main =  require('./config/db')
-const cookieParser =  require('cookie-parser');
+const main = require('./config/db');
+const cookieParser = require('cookie-parser');
 const authRouter = require("./routes/userAuth");
 const redisClient = require('./config/redis');
 const problemRouter = require("./routes/problemCreator");
-const submitRouter = require("./routes/submit")
-const aiRouter = require("./routes/aiChatting")
+const submitRouter = require("./routes/submit");
+const aiRouter = require("./routes/aiChatting");
 const videoRouter = require("./routes/videoCreator");
-const cors = require('cors')
-//const { connectRedis } = require("./config/redis");
-// console.log("Hello")
+const battleRouter = require('./routes/battle');
+const cors = require('cors');
 
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true 
-}))
+}));
 
 app.use(express.json());
 app.use(cookieParser());
-//connectRedis();
 
-app.use('/user',authRouter);
-app.use('/problem',problemRouter);
-app.use('/submission',submitRouter);
-app.use('/ai',aiRouter);
-app.use("/video",videoRouter);
+app.use('/user', authRouter);
+app.use('/problem', problemRouter);
+app.use('/submission', submitRouter);
+app.use('/ai', aiRouter);
+app.use("/video", videoRouter);
+app.use('/battle', battleRouter);
 
-//console.log(process.env.PORT);
+const Battle = require('./models/Battle');
 
-const InitalizeConnection = async ()=>{
-    try{
+io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
 
-        await Promise.all([main(),redisClient.connect()]);
+    socket.on("join-battle", ({ roomId, userId }) => {
+        socket.join(roomId);
+        const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
+        if (roomSize === 2) {
+            io.to(roomId).emit("battle-started");
+        }
+    });
+
+    // Listen for the winner and broadcast it to everyone in the room
+    socket.on("declare-winner", ({ roomId, winnerId, winnerName, timeTaken }) => {
+        io.to(roomId).emit("battle-ended", { 
+            winnerId, 
+            winnerName,
+            timeTaken 
+        });
+    });
+});
+
+const InitalizeConnection = async () => {
+    try {
+        await Promise.all([main(), redisClient.connect()]);
         console.log("DB Connected");
         
-        app.listen(process.env.PORT, ()=>{
-            console.log("Server listening at port number: "+ process.env.PORT);
-        })
-
+        server.listen(process.env.PORT, () => {
+            console.log("Server listening at port number: " + process.env.PORT);
+        });
     }
-    catch(err){
-        console.log("Error: "+err);
+    catch(err) {
+        console.log("Error: " + err);
     }
 }
 
-
 InitalizeConnection();
 
+module.exports = { io };

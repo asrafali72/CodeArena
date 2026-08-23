@@ -1,183 +1,5 @@
-// import { useEffect, useState } from 'react';
-// import { NavLink } from 'react-router'; // Fixed import
-// import { useDispatch, useSelector } from 'react-redux';
-// import axiosClient from '../utils/axiosClient';
-// import { logoutUser } from '../authSlice';
-
-// function Homepage() {
-//   const dispatch = useDispatch();
-//   const { user } = useSelector((state) => state.auth);
-//   const [problems, setProblems] = useState([]);
-//   const [solvedProblems, setSolvedProblems] = useState([]);
-//   const [filters, setFilters] = useState({
-//     difficulty: 'all',
-//     tag: 'all',
-//     status: 'all' 
-//   });
-
-//   useEffect(() => {
-//     const fetchProblems = async () => {
-//       try {
-//         const { data } = await axiosClient.get('/problem/getAllProblem');
-//         setProblems(data);
-//       } catch (error) {
-//         console.error('Error fetching problems:', error);
-//       }
-//     };
-
-//     const fetchSolvedProblems = async () => {
-//       try {
-//         const { data } = await axiosClient.get('/problem/problemSolvedByUser');
-//         setSolvedProblems(data);
-//       } catch (error) {
-//         console.error('Error fetching solved problems:', error);
-//       }
-//     };
-
-//     fetchProblems();
-//     if (user) fetchSolvedProblems();
-//   }, [user]);
-
-//   const handleLogout = () => {
-//     dispatch(logoutUser());
-//     setSolvedProblems([]); // Clear solved problems on logout
-//   };
-
-//   const filteredProblems = problems.filter(problem => {
-//     const difficultyMatch = filters.difficulty === 'all' || problem.difficulty === filters.difficulty;
-//     const tagMatch = filters.tag === 'all' || problem.tags === filters.tag;
-//     const statusMatch = filters.status === 'all' || 
-//                       solvedProblems.some(sp => sp._id === problem._id);
-//     return difficultyMatch && tagMatch && statusMatch;
-//   });
-
-//   return (
-//     <div className="min-h-screen bg-base-200">
-//       {/* Navigation Bar */}
-//       <nav className="navbar bg-base-100 shadow-lg px-4">
-//         <div className="flex-1">
-//           <NavLink to="/" className="btn btn-ghost text-xl">CodeArena</NavLink>
-//         </div>
-//         <div className="flex-none gap-4">
-//           <div className="dropdown dropdown-end">
-//             <div tabIndex={0} className="btn btn-ghost">
-//               {user?.firstName}
-//             </div>
-//             <ul className="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-//               <li><button onClick={handleLogout}>Logout</button></li>
-//               {user.role=='admin'&&<li><NavLink to="/admin">Admin</NavLink></li>}
-//             </ul>
-//           </div>
-//         </div>
-//       </nav>
-
-//       {/* Main Content */}
-//       <div className="container mx-auto p-4">
-//         {/* Filters */}
-//         <div className="flex flex-wrap gap-4 mb-6">
-//           {/* New Status Filter */}
-//           <select 
-//             className="select select-bordered"
-//             value={filters.status}
-//             onChange={(e) => setFilters({...filters, status: e.target.value})}
-//           >
-//             <option value="all">All Problems</option>
-//             <option value="solved">Solved Problems</option>
-//           </select>
-
-//           <select 
-//             className="select select-bordered"
-//             value={filters.difficulty}
-//             onChange={(e) => setFilters({...filters, difficulty: e.target.value})}
-//           >
-//             <option value="all">All Difficulties</option>
-//             <option value="easy">Easy</option>
-//             <option value="medium">Medium</option>
-//             <option value="hard">Hard</option>
-//           </select>
-
-//           <select 
-//             className="select select-bordered"
-//             value={filters.tag}
-//             onChange={(e) => setFilters({...filters, tag: e.target.value})}
-//           >
-//             <option value="all">All Tags</option>
-//             <option value="array">Array</option>
-//             <option value="linkedList">Linked List</option>
-//             <option value="graph">Graph</option>
-//             <option value="dp">DP</option>
-//           </select>
-//         </div>
-
-//         {/* Problems List */}
-//         <div className="grid gap-4">
-//           {filteredProblems.map(problem => (
-//             <div key={problem._id} className="card bg-base-100 shadow-xl">
-//               <div className="card-body">
-//                 <div className="flex items-center justify-between">
-//                   <h2 className="card-title">
-//                     <NavLink to={`/problem/${problem._id}`} className="hover:text-primary">
-//                       {problem.title}
-//                     </NavLink>
-//                   </h2>
-//                   {solvedProblems.some(sp => sp._id === problem._id) && (
-//                     <div className="badge badge-success gap-2">
-//                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-//                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-//                       </svg>
-//                       Solved
-//                     </div>
-//                   )}
-//                 </div>
-                
-//                 <div className="flex gap-2">
-//                   <div className={`badge ${getDifficultyBadgeColor(problem.difficulty)}`}>
-//                     {problem.difficulty}
-//                   </div>
-//                   <div className="badge badge-info">
-//                     {problem.tags}
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// const getDifficultyBadgeColor = (difficulty) => {
-
-//     switch (difficulty.toLowerCase()) {
-
-//         case 'basic':
-//             return 'badge-neutral';  // Gray
-
-//         case 'easy':
-//             return 'badge-success';  // Green
-
-//         case 'medium':
-//             return 'badge-info';     // Blue
-
-//         case 'hard':
-//             return 'badge-warning';  // Orange/Yellow
-
-//         case 'advanced':
-//             return 'badge-error';    // Red
-
-//         default:
-//             return 'badge-neutral';
-//     }
-
-// };
-
-// export default Homepage;
-
-
-
 import { useEffect, useMemo, useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router'; 
 import { useDispatch, useSelector } from 'react-redux';
 import axiosClient from '../utils/axiosClient';
 import { logoutUser } from '../authSlice';
@@ -185,11 +7,17 @@ import { logoutUser } from '../authSlice';
 function Homepage() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   const [problems, setProblems] = useState([]);
   const [solvedProblems, setSolvedProblems] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [isCreatingBattle, setIsCreatingBattle] = useState(false);
+  
+  // Modal states
+  const [showBattleModal, setShowBattleModal] = useState(false);
+  const [selectedProblemIndex, setSelectedProblemIndex] = useState('');
 
   const [filters, setFilters] = useState({
     difficulty: 'all',
@@ -197,6 +25,39 @@ function Homepage() {
     status: 'all',
     search: '',
   });
+
+  const handleCreateBattle = async () => {
+    if (problems.length === 0) {
+      return alert("Wait for problems to load!");
+    }
+
+    let problemToBattle;
+
+    // 1. If an index is selected, grab that exact problem from the array
+    if (selectedProblemIndex !== '') {
+      problemToBattle = problems[Number(selectedProblemIndex)];
+    } else {
+      // 2. Otherwise, pick a random one
+      problemToBattle = problems[Math.floor(Math.random() * problems.length)];
+    }
+    
+    setIsCreatingBattle(true);
+    try {
+      const { data } = await axiosClient.post('/battle/challenge', {
+        problemId: problemToBattle._id
+      });
+      
+      setShowBattleModal(false); // Close the modal
+      
+      // Redirect to the new battle room
+      navigate(`/battle/${data.roomId}/${problemToBattle._id}`);
+    } catch (error) {
+      console.error("Failed to create battle:", error);
+      alert("Could not start battle. Please try again.");
+    } finally {
+      setIsCreatingBattle(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -301,160 +162,27 @@ function Homepage() {
     <div className="min-h-screen bg-[#09090b] text-zinc-100">
 
       {/* =========================================================
-          NAVBAR
-      ========================================================= */}
-
-      {/* <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#09090b]/85 backdrop-blur-xl">
-
-        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"> */}
-
-          {/* Logo */}
-          {/* <NavLink
-            to="/"
-            className="group flex items-center gap-3"
-          >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20 transition duration-300 group-hover:scale-105">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 9l3 3-3 3m5 0h3M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-
-            <div className="hidden sm:block">
-              <div className="text-[17px] font-bold tracking-tight text-white">
-                Code<span className="text-indigo-400">Arena</span>
-              </div>
-
-              <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-                Practice • Compete • Improve
-              </div>
-            </div>
-          </NavLink> */}
-
-          {/* Right Side */}
-          {/* <div className="flex items-center gap-3">
-
-            {user?.role === 'admin' && (
-              <NavLink
-                to="/admin"
-                className="hidden rounded-lg border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-sm font-medium text-zinc-400 transition hover:border-indigo-500/30 hover:bg-indigo-500/10 hover:text-indigo-300 sm:flex"
-              >
-                Admin
-              </NavLink>
-            )} */}
-
-            {/* User */}
-            {/* {user && (
-              <div className="dropdown dropdown-end">
-
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 transition hover:border-white/[0.12] hover:bg-white/[0.05]"
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500/30 to-violet-500/30 text-sm font-bold text-indigo-300 ring-1 ring-indigo-400/20">
-                    {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
-                  </div>
-
-                  <div className="hidden text-left sm:block">
-                    <div className="max-w-[110px] truncate text-sm font-medium text-zinc-200">
-                      {user?.firstName}
-                    </div>
-
-                    <div className="text-[10px] uppercase tracking-wider text-zinc-600">
-                      {user?.role || 'User'}
-                    </div>
-                  </div>
-
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="hidden h-4 w-4 text-zinc-600 sm:block"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-
-                <ul
-                  tabIndex={0}
-                  className="menu dropdown-content z-[1] mt-3 w-56 rounded-xl border border-white/[0.08] bg-[#111113] p-2 shadow-2xl shadow-black/40"
-                >
-
-                  <li className="mb-1">
-                    <div className="pointer-events-none flex flex-col items-start gap-0 px-3 py-2">
-                      <span className="text-xs text-zinc-500">
-                        Signed in as
-                      </span>
-
-                      <span className="max-w-full truncate text-sm font-medium text-zinc-200">
-                        {user?.firstName}
-                      </span>
-                    </div>
-                  </li>
-
-                  <div className="my-1 h-px bg-white/[0.06]" />
-
-                  {user?.role === 'admin' && (
-                    <li>
-                      <NavLink to="/admin">
-                        <span>Admin Dashboard</span>
-                      </NavLink>
-                    </li>
-                  )}
-
-                  <li>
-                    <button
-                      onClick={handleLogout}
-                      className="text-red-400 hover:bg-red-500/10 hover:text-red-300"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        />
-                      </svg>
-
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      </nav> */}
-
-
-      {/* =========================================================
           MAIN
       ========================================================= */}
 
       <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+
+        {/* =====================================================
+            1v1 CHALLENGE BUTTON (TOP LEFT)
+        ===================================================== */}
+        {user && (
+          <div className="mb-6 flex justify-start">
+            <button
+              onClick={() => setShowBattleModal(true)}
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:scale-105 hover:shadow-indigo-500/40"
+            >
+              <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+              <span className="relative flex items-center gap-2">
+                ⚔️ Start 1v1 Challenge
+              </span>
+            </button>
+          </div>
+        )}
 
         {/* =====================================================
             HERO
@@ -462,7 +190,6 @@ function Homepage() {
 
         <section className="relative mb-6 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#101014]">
 
-          
           <div className="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-indigo-600/10 blur-3xl" />
 
           <div className="pointer-events-none absolute -bottom-40 left-1/3 h-80 w-80 rounded-full bg-violet-600/[0.07] blur-3xl" />
@@ -478,15 +205,6 @@ function Homepage() {
                   Coding Practice Arena
                 </div>
 
-                {/* <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  Sharpen your skills.
-                  <br />
-
-                  <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
-                    One problem at a time.
-                  </span>
-                </h1> */}
-
                 <p className="mt-4 max-w-xl text-sm leading-6 text-zinc-500 sm:text-base">
                   Solve carefully designed programming problems,
                   track your progress, and push yourself to the next
@@ -495,8 +213,6 @@ function Homepage() {
 
               </div>
 
-
-             
               <div className="w-full max-w-xs lg:w-72">
 
                 <div className="mb-3 flex items-end justify-between">
@@ -533,82 +249,6 @@ function Homepage() {
           </div>
         </section>
 
-
-        {/* =====================================================
-            STAT CARDS
-        ===================================================== */}
-
-        {/* <section className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-
-          <StatCard
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.8"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"
-                />
-              </svg>
-            }
-            label="Total Problems"
-            value={totalCount}
-            iconClass="bg-indigo-500/10 text-indigo-400"
-          />
-
-          <StatCard
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            }
-            label="Solved"
-            value={solvedCount}
-            iconClass="bg-emerald-500/10 text-emerald-400"
-          />
-
-          <StatCard
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.8"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            }
-            label="Remaining"
-            value={remainingCount}
-            iconClass="bg-orange-500/10 text-orange-400"
-          />
-
-        </section> */}
-
-
         {/* =====================================================
             FILTER SECTION
         ===================================================== */}
@@ -640,7 +280,6 @@ function Homepage() {
             )}
 
           </div>
-
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
 
@@ -676,7 +315,6 @@ function Homepage() {
               />
 
             </div>
-
 
             {/* Status */}
             <select
@@ -714,7 +352,6 @@ function Homepage() {
               <option value="advanced">Advanced</option>
             </select>
 
-
             {/* Tag */}
             <select
               value={filters.tag}
@@ -736,7 +373,6 @@ function Homepage() {
           </div>
 
         </section>
-
 
         {/* =====================================================
             RESULT HEADER
@@ -761,7 +397,6 @@ function Homepage() {
           </span>
 
         </div>
-
 
         {/* =====================================================
             PROBLEM LIST
@@ -845,7 +480,6 @@ function Homepage() {
 
                       </div>
 
-
                       {/* Difficulty */}
                       <div>
                         <span
@@ -911,6 +545,53 @@ function Homepage() {
         </div>
 
       </main>
+
+      {/* =====================================================
+          BATTLE SELECTION MODAL
+      ===================================================== */}
+      {showBattleModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#101014] p-6 shadow-2xl">
+            
+            <h2 className="mb-2 text-xl font-bold text-white">
+              Create 1v1 Arena
+            </h2>
+            <p className="mb-6 text-sm text-zinc-400">
+              Select a coding challenge for your match. Your opponent will have to solve this exact problem.
+            </p>
+            
+            <select
+                value={selectedProblemIndex}
+                onChange={(e) => setSelectedProblemIndex(e.target.value)}
+                className="mb-8 h-12 w-full rounded-xl border border-white/[0.07] bg-white/[0.025] px-4 text-sm text-zinc-200 outline-none transition focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/20"
+            >
+                <option value="">🎲 Random Problem (Surprise me!)</option>
+                {problems.map((p, index) => (
+                    <option key={p._id} value={index}>
+                        {p.title} - {p.difficulty}
+                    </option>
+                ))}
+            </select>
+
+            <div className="flex justify-end gap-3">
+              <button 
+                  onClick={() => setShowBattleModal(false)}
+                  className="rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-white/[0.05] hover:text-white"
+              >
+                  Cancel
+              </button>
+              <button 
+                  onClick={handleCreateBattle}
+                  disabled={isCreatingBattle}
+                  className="inline-flex min-w-[120px] items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              >
+                  {isCreatingBattle ? 'Creating...' : 'Create Match'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

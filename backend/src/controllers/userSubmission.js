@@ -2,6 +2,9 @@ const Problem = require("../models/problem");
 const Submission = require("../models/submission");
 const User = require("../models/user");
 const {getLanguageById,submitBatch,submitToken} = require("../utils/problemUtility");
+const Battle = require("../models/Battle"); // ADDED: Battle Model
+const { io } = require("../index"); // ADDED: Import io to send real-time events
+
 
 const submitCode = async (req,res)=>{
    
