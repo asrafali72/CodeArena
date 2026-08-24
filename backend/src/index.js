@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: 'https://codearena-bly4.onrender.com',
         credentials: true
     }
 });
@@ -26,7 +26,7 @@ const battleRouter = require('./routes/battle');
 const cors = require('cors');
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://codearena-bly4.onrender.com',
     credentials: true 
 }));
 
