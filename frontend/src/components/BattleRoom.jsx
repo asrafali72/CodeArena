@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import axiosClient from '../utils/axiosClient';
 import Editor from '@monaco-editor/react';
 
-const socket = io('http://localhost:3000', { 
+const socket = io('https://codearena-1-0r7a.onrender.com', { 
     withCredentials: true 
 });
 
