@@ -2,6 +2,10 @@ const express = require('express');
 const http = require('http'); 
 const { Server } = require('socket.io'); 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://codearena-bly4.onrender.com"
+];
 
 const server = http.createServer(app); 
 
@@ -24,11 +28,6 @@ const aiRouter = require("./routes/aiChatting");
 const videoRouter = require("./routes/videoCreator");
 const battleRouter = require('./routes/battle');
 const cors = require('cors');
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://codearena-bly4.onrender.com"
-];
 
 app.use(cors({
     origin: allowedOrigins,
