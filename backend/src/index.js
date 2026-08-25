@@ -1,6 +1,9 @@
 const express = require('express');
 const http = require('http'); 
 const { Server } = require('socket.io'); 
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
@@ -16,7 +19,7 @@ const io = new Server(server, {
     }
 });
 
-require('dotenv').config();
+
 
 const main = require('./config/db');
 const cookieParser = require('cookie-parser');
@@ -27,7 +30,6 @@ const submitRouter = require("./routes/submit");
 const aiRouter = require("./routes/aiChatting");
 const videoRouter = require("./routes/videoCreator");
 const battleRouter = require('./routes/battle');
-const cors = require('cors');
 
 app.use(cors({
     origin: allowedOrigins,
