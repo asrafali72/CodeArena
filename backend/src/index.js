@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: 'https://codearena-bly4.onrender.com',
+        origin: allowedOrigins,
         credentials: true
     }
 });
@@ -25,8 +25,13 @@ const videoRouter = require("./routes/videoCreator");
 const battleRouter = require('./routes/battle');
 const cors = require('cors');
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://codearena-bly4.onrender.com"
+];
+
 app.use(cors({
-    origin: 'https://codearena-bly4.onrender.com',
+    origin: allowedOrigins,
     credentials: true 
 }));
 
